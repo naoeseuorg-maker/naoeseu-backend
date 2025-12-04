@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: naoeseu-backend
+    env: node
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: MODO_SIMULADO
+        value: "true"
+      - key: EMAIL_REMETENTE
+        sync: false
+      - key: EMAIL_SUPORTE_FABRICA
+        sync: false
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: PIX_CLIENT_ID
+        sync: false
+      - key: PIX_CLIENT_SECRET
+        sync: false
+      - key: PIX_KEY
+        sync: false
+      - key: SHEET_ID
+        sync: false
+      - key: GOOGLE_CREDENTIALS
+        sync: false
