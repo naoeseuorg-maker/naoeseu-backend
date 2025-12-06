@@ -1,35 +1,33 @@
-const { google } = require("googleapis");
 const fs = require("fs");
-
-// Caminho do arquivo secreto enviado ao Render
-const PATH_CREDENTIALS = "/etc/secrets/google-credentials.json";
-
-// Carrega credenciais do Google a partir do Secret File
-let credenciais;
-
-try {
-  const raw = fs.readFileSync(PATH_CREDENTIALS, "utf8");
-  credenciais = JSON.parse(raw);
-  console.log("🔐 Credenciais do Google carregadas com sucesso.");
-} catch (err) {
-  console.error("❌ Erro ao carregar credenciais do Google:", err);
-}
+const { google } = require("googleapis");
+const config = require("../config");
 
 module.exports = {
   async registrarPagamento(pagamento) {
     try {
-      // Autenticação JWT usando as credenciais carregadas do arquivo
+      // --- 1) CARREGAR CREDENCIAIS DO ARQUIVO SECRETO ---
+      const raw = fs.readFileSync(config.sheets.credentials_path, "utf8");
+      const credentials = JSON.parse(raw);
+
+      // --- 2) AUTENTICAÇÃO JWT ---
       const auth = new google.auth.JWT(
-        credenciais.client_email,
+        credentials.client_email,
         null,
-        credenciais.private_key,
+        credentials.private_key,
         ["https://www.googleapis.com/auth/spreadsheets"]
       );
 
       const sheets = google.sheets({ version: "v4", auth });
 
+      // Garantir que o sheet_id existe
+      if (!config.sheets.sheet_id) {
+        console.error("❌ ERRO FATAL: Variável de ambiente SHEET_ID não foi definida.");
+        return;
+      }
+
+      // --- 3) ESCREVER NA PLANILHA ---
       await sheets.spreadsheets.values.append({
-        spreadsheetId: process.env.SHEET_ID,   // RECOMENDADO: mover para env
+        spreadsheetId: config.sheets.sheet_id,
         range: "Pedidos!A1",
         valueInputOption: "RAW",
         resource: {
@@ -44,10 +42,10 @@ module.exports = {
         }
       });
 
-      console.log("📄 Pagamento registrado na planilha.");
+      console.log("📄 Pagamento registrado com sucesso no Google Sheets!");
 
-    } catch (erro) {
-      console.error("❌ Erro ao registrar pagamento no Sheets:", erro);
+    } catch (err) {
+      console.error("❌ Erro ao registrar pagamento no Sheets:", err);
     }
   }
 };

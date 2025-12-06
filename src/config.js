@@ -1,7 +1,8 @@
 module.exports = {
+  // Porta usada pelo servidor
   PORT: process.env.PORT || 3000,
 
-  // PIX - placeholders até a fábrica fornecer os dados reais
+  // PIX — placeholders até a fábrica fornecer os dados reais
   pix: {
     client_id: process.env.PIX_CLIENT_ID || "CLIENT_ID_AQUI",
     client_secret: process.env.PIX_CLIENT_SECRET || "CLIENT_SECRET_AQUI",
@@ -15,18 +16,18 @@ module.exports = {
     sendgrid_key: process.env.SENDGRID_API_KEY || "SENDGRID_API_KEY_AQUI"
   },
 
-  // Projeto
+  // Informações gerais do projeto
   projeto: {
     nome: "Seu Dinheiro Não é Seu",
     url_api: "https://naoeseu.org/api"
   },
 
-  // Google Sheets
+  // Google Sheets (corrigido)
   sheets: {
-    sheet_id: process.env.SHEET_ID || "SHEET_ID_AQUI",
-    credentials: process.env.GOOGLE_CREDENTIALS || "GOOGLE_CREDS_AQUI"
+    sheet_id: process.env.SHEET_ID,                         // ← Lido das variáveis de ambiente
+    credentials_path: "/etc/secrets/google-credentials.json" // ← Arquivo secreto no Render
   },
 
-  // Modo simulado para testes enquanto a fábrica não gera as credenciais reais
+  // Modo simulado para testes
   modoSimulado: process.env.MODO_SIMULADO || true
 };
