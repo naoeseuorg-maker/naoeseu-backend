@@ -19,16 +19,15 @@ module.exports = {
 
       const sheets = google.sheets({ version: "v4", auth });
 
-      // Garantir que o sheet_id existe
       if (!config.sheets.sheet_id) {
-        console.error("❌ ERRO FATAL: Variável de ambiente SHEET_ID não foi definida.");
+        console.error("❌ ERRO FATAL: Variável SHEET_ID não foi definida.");
         return;
       }
 
       // --- 3) ESCREVER NA PLANILHA ---
       await sheets.spreadsheets.values.append({
         spreadsheetId: config.sheets.sheet_id,
-        range: "Pedidos!A1",
+        range: "Pedidos!A:D", // ✅ RANGE CORRIGIDO
         valueInputOption: "RAW",
         resource: {
           values: [
